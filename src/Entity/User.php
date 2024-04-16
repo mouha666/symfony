@@ -10,8 +10,7 @@ use App\Repository\UsersRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass:UsersRepository::class)]
 class User 
@@ -39,6 +38,11 @@ class User
     private ?string $email;
 
     #[Assert\NotBlank(message: 'The Phone Number cannot be blank')]
+    #[Assert\Length(
+        min: 8,
+        max: 8,
+        exactMessage: 'Your Phone number must be exactly 8 numbers'
+    )]
     #[ORM\Column(type: 'integer')]
     #[Groups("users")]
     private ?int $phonenum;
@@ -60,7 +64,7 @@ class User
     private ?int $age;
 
     #[Assert\NotBlank(message: 'The Password cannot be blank')]
-    #[Assert\Regex(pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', message: 'Please enter a password that contains At least one lowercase letter ,  At least one uppercase letter ,At least one digit,  At least one special character among @$!%*?& with a minimum length of 8 characters ')]
+    #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', message: 'Please enter a password that contains At least one lowercase letter ,  At least one uppercase letter ,At least one digit,  At least one special character among @$!%*?& with a minimum length of 8 characters ')]
     #[ORM\Column(length: 30, type: 'string')]
     #[Groups("users")]
     private ?string $password;
@@ -76,6 +80,7 @@ class User
     private ?string $role;
 
     #[Assert\NotBlank(message: 'The Height cannot be blank')]
+    #[Assert\Regex(pattern: '/^\d+$/', message: 'Only numbers are allowed')]
     #[ORM\Column]
     #[Groups("users")]
     private ?float $height;
