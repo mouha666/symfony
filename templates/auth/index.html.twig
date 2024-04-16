@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phonenum</th>
+                <th>Gender</th>
+                <th>Adresse</th>
+                <th>Age</th>
+                <th>Password</th>
+                <th>Joindate</th>
+                <th>Role</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>RecetteId</th>
+                <th>ConseilId</th>
+                <th>FeedbackId</th>
+                <th>RecoveryCode</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phonenum }}</td>
+                <td>{{ user.gender }}</td>
+                <td>{{ user.adresse }}</td>
+                <td>{{ user.age }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.joindate ? user.joindate|date('Y-m-d') : '' }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.height }}</td>
+                <td>{{ user.weight }}</td>
+                <td>{{ user.recetteId }}</td>
+                <td>{{ user.conseilId }}</td>
+                <td>{{ user.feedbackId }}</td>
+                <td>{{ user.recoveryCode }}</td>
+                <td>
+                    <a href="{{ path('app_auth_show', {'id': user.id}) }}">show</a>
+                    <a href="{{ path('app_auth_edit', {'id': user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="17">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_auth_new') }}">Create new</a>
+{% endblock %}

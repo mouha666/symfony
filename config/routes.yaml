@@ -1,0 +1,9 @@
+Create:
+    path: /usercreate
+    controller: App\Controller\CreateAccountController::index
+login:
+    path: /login
+    controller: App\Controller\UserController::index
+homepage:
+    path: /home
+    controller: App\Controller\HomeController::index

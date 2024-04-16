@@ -1,0 +1,32 @@
+{{ form_start(form ,{'attr': {'novalidate': 'novalidate'}},{'action': path('app_createaccount') }) }}
+        <div class="input-group">
+          
+          {{ form_row(form.email, {'attr': {'class':'input',  'placeholder': 'Enter your email', 'novalidate': 'novalidate'},  'label': false})}}
+          
+          {{ form_row(form.password, {'attr': {'class':'input','novalidate': 'novalidate',  'placeholder': 'Enter your password'},  'label': false})}}
+        </div>
+        <div class="input-group">
+          
+          {{ form_row(form.name, {'attr': {'class':'input','novalidate': 'novalidate', 'placeholder': 'Enter your name'},  'label': false})}}
+          
+          {{ form_row(form.adresse, {'attr': {'class':'input','novalidate': 'novalidate',  'placeholder': 'Enter your adresse'},  'label': false})}}
+        </div>
+        <div class="input-group">
+          
+          {{ form_row(form.age, {'attr': {'class':'input','novalidate': 'novalidate',  'placeholder': 'Enter your age' }, 'label': false})}}
+          
+          {{ form_row(form.phonenum, {'attr': {'class':'input','novalidate': 'novalidate',  'placeholder': 'Enter your Phone Number' }, 'label': false})}}
+        </div>
+        <div class="input-group">
+          
+          {{ form_row(form.height, {'attr': {'class':'input','novalidate': 'novalidate', 'placeholder': 'Enter your height'}, 'label': false})}}
+          
+          {{ form_row(form.weight, {'attr': {'class':'input','novalidate': 'novalidate',  'placeholder': 'Enter your weight'}, 'label': false})}}
+        </div>
+        <div class="input-group">
+          
+          {{ form_row(form.gender, {'attr': {'class':'input'}})}}
+        </div>
+
+    <button class="btn  create-account">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+    {% block css%}
+    <link rel="stylesheet" href="{{asset('assets/css/login.css')}}" />
+    <link rel="stylesheet" href="{{asset('assets/css/avocado.css')}}" />
+    {% endblock %}
+
+    {% block body %}
+    <img class="img" src="{{asset('assets/img/core-img/Avocado.png')}}" alt="Avocado Logo">
+
+    <div class="content">
+      <div class="flex-div">
+        <div class="name-content">
+          <h1 class="logo">Avocado</h1>
+          <p>Get your best healthy recipes with us .</p>
+        </div>
+        
+        {{ include('auth/_form.html.twig') }}
+          
+      </div>
+    </div>
+  {% endblock %}
