@@ -29,7 +29,7 @@ class User
     #[Assert\Regex(pattern: '/^[a-zA-Z]*$/', message: 'The first name must contain only alphabetic characters')]
     #[ORM\Column(length: 30, type: 'string')]
     #[Groups("users")]
-    private ?string $name;
+    private ?string $name = null;
 
     #[Assert\NotBlank(message: 'The Email cannot be blank')]
     #[Assert\Email(message: 'Please enter a valid email address')]
@@ -45,7 +45,7 @@ class User
     )]
     #[ORM\Column(type: 'integer')]
     #[Groups("users")]
-    private ?int $phonenum;
+    private ?int $phonenum = null;
 
     
     #[ORM\Column(type:'string', length: 10)]
@@ -56,7 +56,7 @@ class User
     #[Assert\NotBlank(message: 'The Adresse cannot be blank')]
     #[ORM\Column(type:'string', length: 100)]
     #[Groups("users")]
-    private ?string $adresse;
+    private ?string $adresse = null;
 
     #[Assert\NotBlank(message: 'The Age cannot be blank')]
     #[ORM\Column(type:'integer')]
@@ -83,12 +83,12 @@ class User
     #[Assert\Regex(pattern: '/^\d+$/', message: 'Only numbers are allowed')]
     #[ORM\Column]
     #[Groups("users")]
-    private ?float $height;
+    private ?float $height = null;
 
     #[Assert\NotBlank(message: 'The Weight cannot be blank')]
     #[ORM\Column]
     #[Groups("users")]
-    private ?float $weight;
+    private ?float $weight = null;
 
     
     #[ORM\Column(type: 'integer')]

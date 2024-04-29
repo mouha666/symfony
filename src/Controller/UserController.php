@@ -62,8 +62,12 @@ class UserController extends AbstractController
     {
        
         
-        $form = $this->createForm(User1Type::class);
+        $form = $this->createForm(User1Type::class,null, ['validation_groups' => ['login']]);
         $form->handleRequest($request);
+            $email = $form->get('email')->getData();
+            $password = $form->get('password')->getData();
+            dump($email);
+            dump($password);
     
         if ($form->isSubmitted() && $form->isValid()) {
             //$formData = $form->getData();
@@ -71,8 +75,8 @@ class UserController extends AbstractController
             //$email  =$formData['email'] ?? null;
             //dump($email);
             //dump($password);
-            $email = $form->get('email')->getData();
-            $password = $form->get('password')->getData();
+            dump("started sign in process");
+            
             //$formData = $form->getData();
             //$email = $formData['email'];
             $user = $usersRepository->findOneBy(['email' => $email]);
@@ -90,6 +94,7 @@ class UserController extends AbstractController
 
             if (!$user || $password!== $user->getPassword() ) {
                 // Invalid email or password, add flash message
+                dump("validation password ...");
                 
                 
                 return $this->render('authenticate.html.twig', [
@@ -97,18 +102,16 @@ class UserController extends AbstractController
                     
                 ]);
             }
-
+            dump("validation complete.");
            
             
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-           
+           dump("taking you to home page....");
 
-            return $this->render('index.html.twig', [
-                'currentuser' => $user,
-            ]);
+            return $this->render('index.html.twig');
         }
         
         return $this->render('authenticate.html.twig', [
