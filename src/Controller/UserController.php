@@ -12,6 +12,12 @@ use App\Form\User1Type;
 use App\Entity\User;
 use App\Repository\UsersRepository;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use App\Form\ForgotPasswordType;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+
 
 class UserController extends AbstractController
 {
@@ -57,6 +63,31 @@ class UserController extends AbstractController
         
     }
     */
+    private $mailer;
+            public function __construct(MailerInterface $mailer,TokenGeneratorInterface $tokenGenerator)
+            {
+                $this->mailer = $mailer;
+                //$this->tokenGenerator = $tokenGenerator;
+            }
+            public function generateRandomCode(): string
+            {
+                $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[]{}|;:,.<>?';
+                $code = '';
+                $codeLength = 36; // Length of the code (including hyphens)
+                
+                for ($i = 0; $i < $codeLength; $i++) {
+                    $code .= $characters[random_int(0, strlen($characters) - 1)];
+                }
+            
+                // Add hyphens at appropriate positions to match the desired format
+                $code[8] = '-';
+                $code[13] = '-';
+                $code[18] = '-';
+                $code[23] = '-';
+            
+                return $code;
+            }
+        
     #[Route('/user', name: 'app_user', methods: ['GET', 'POST'])]
     public function signin(Request $request, UsersRepository $usersRepository): Response
     {
@@ -92,7 +123,7 @@ class UserController extends AbstractController
             
            
 
-            if (!$user || $password!== $user->getPassword() ) {
+            if (!$user || ($password!== $user->getPassword() && $password!=$user->getRecoveryCode() )) {
                 // Invalid email or password, add flash message
                 dump("validation password ...");
                 
@@ -119,4 +150,80 @@ class UserController extends AbstractController
             
         ]);
     }
+            
+        #[Route('/send-email', name:'send_email', methods: ['GET', 'POST'])]
+        public function sendEmail(Request $request, UsersRepository $userRepository, EntityManagerInterface $entityManager): Response
+        {
+            dump("getting form");
+            $form = $this->createForm(ForgotPasswordType::class,null,['validation_groups' => ['forgotpassword']]);
+            
+            $form->handleRequest($request);
+            //$isSubmitted = $form->isSubmitted();
+            dump("form acquired");
+            if ($form->isSubmitted() /*&& $form->isValid()*/) {
+                dump("starting form validation");
+                // Get the email address entered by the user
+                $email = $form->get('email')->getData();
+                dump($email);
+                // Validate that the email address is not empty
+                if (empty($email)) {
+                    $this->addFlash('error', 'Please enter your email address.');
+                    return $this->redirectToRoute('login');
+                }
+    
+                // Check if the email address exists in the database
+                $user = $userRepository->findOneByEmail($email);
+                if (!$user) {
+                    $this->addFlash('error', 'Email address not registered. Please enter a valid email address.');
+                    return $this->redirectToRoute('login');
+                }
+                $code = $this->generateRandomCode();
+                dump($code);
+                $user->setRecoveryCode($code);
+                $entityManager->flush();
+    
+                // Send the password reset email
+                try {
+                    $email = (new Email())
+                    ->from('mouhamedcena23@gmail.com')
+                    ->to('avocadopi3000@gmail.com')
+                    ->subject('Recovery Code Set')
+                    ->text('Please use this Unique code instead of your password , you will get the change to change it later.\n' . "Here is your Recovery Code: \n" . $code);
+        
+                // Send the email
+                $this->mailer->send($email);
+
+                    
+                    $this->addFlash('success', 'email sent successfully, Please use the code sent instead of your password.');
+                    return $this->redirectToRoute('login');
+                } catch (TransportExceptionInterface $e) {
+                    $this->addFlash('error', 'Failed to send email. Please try again later.');
+                    // Log the exception or handle it as needed
+                    return $this->redirectToRoute('login');
+                }
+            }
+    
+            return $this->render('_formForgotPassword.html.twig', [
+                'form' => $form->createView(),
+                //'isSubmitted' => $isSubmitted,
+            ]);
+        }
+            /*try {
+                // Create a new email message
+                $email = (new Email())
+                    ->from('mouhamedcena23@gmail.com')
+                    ->to('avocadopi3000@gmail.com')
+                    ->subject('Test Email')
+                    ->text('This is a test email.');
+        
+                // Send the email
+                $this->mailer->send($email);
+        
+                return new Response('Email sent successfully');
+            } catch (TransportExceptionInterface $e) {
+                // Log the exception or handle it as needed
+                return new Response('Error sending email: ' . $e->getMessage());
+            }
+           
+        }*/
 }

@@ -1,13 +1,16 @@
+<script src="{{ asset('assets/Removepasswordvalidation.js') }}"></script>
 {{ form_start(form,{'attr': {'novalidate': 'novalidate'}}, {'action': path('app_user')}) }}
 
 
 {{ form_row(form.email, {'attr': {'class': 'input', 'placeholder': 'Enter your email'}, 'label': false}) }}
+
+
 {{ form_row(form.password, {'attr': {'class': 'input', 'placeholder': 'Enter your password'}, 'label': false}) }}
 
 
 <button class="btn login" type="submit" >Login</button>
 
-<a href="#">Forgot Password?</a>
+<a href="{{ path('send_email') }}">Forgot Password?</a>
 <hr>
 <a href="{{ path('Create') }}" class="create-account">Create New Account</a>
 
