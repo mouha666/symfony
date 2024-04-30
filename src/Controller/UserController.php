@@ -187,14 +187,14 @@ class UserController extends AbstractController
     
                 // Send the password reset email
                 try {
-                    $email = (new Email())
+                    $emaill = (new Email())
                     ->from('mouhamedcena23@gmail.com')
-                    ->to('avocadopi3000@gmail.com')
+                    ->to($email)
                     ->subject('Recovery Code Set')
                     ->text('Please use this Unique code instead of your password , you will get the change to change it later.\n' . "Here is your Recovery Code: \n" . $code);
         
                 // Send the email
-                $this->mailer->send($email);
+                $this->mailer->send($emaill);
 
                     
                     $this->addFlash('success', 'email sent successfully, Please use the code sent instead of your password.');

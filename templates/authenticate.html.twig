@@ -6,7 +6,7 @@
 
     {% block body %}
     <img class="img" src="{{asset('assets/img/core-img/Avocado.png')}}" alt="Avocado Logo">
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <div class="content">
       <div class="flex-div">
         <div class="name-content">
@@ -14,7 +14,10 @@
           <p>Get your best healthy recipes with us .</p>
         </div>
         
+
         {{ include('auth/_form.html.twig') }}
+
+        
           
       </div>
     </div>
