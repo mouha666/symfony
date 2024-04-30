@@ -13,3 +13,9 @@ SendEMail:
 ValLogin:
     path: /user
     controller: App\Controller\UserController::signin
+Home:
+    path: /home
+    controller: App\Controller\HomeController::index
+Logout: 
+    path: /logout
+    controller: App\Controller\LogoutController::index

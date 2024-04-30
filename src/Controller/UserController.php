@@ -17,6 +17,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use App\Form\ForgotPasswordType;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 class UserController extends AbstractController
@@ -89,7 +90,7 @@ class UserController extends AbstractController
             }
         
     #[Route('/user', name: 'app_user', methods: ['GET', 'POST'])]
-    public function signin(Request $request, UsersRepository $usersRepository): Response
+    public function signin(Request $request, UsersRepository $usersRepository,SessionInterface $session): Response
     {
        
         
@@ -139,7 +140,8 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-
+            $userId = $user->getId();
+            $session->set('user_id', $userId);
            dump("taking you to home page....");
 
             return $this->render('index.html.twig');
@@ -149,6 +151,7 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             
         ]);
+        
     }
             
         #[Route('/send-email', name:'send_email', methods: ['GET', 'POST'])]
