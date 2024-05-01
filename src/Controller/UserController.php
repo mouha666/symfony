@@ -74,13 +74,13 @@ class UserController extends AbstractController
             {
                 $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[]{}|;:,.<>?';
                 $code = '';
-                $codeLength = 36; // Length of the code (including hyphens)
+                $codeLength = 36; 
                 
                 for ($i = 0; $i < $codeLength; $i++) {
                     $code .= $characters[random_int(0, strlen($characters) - 1)];
                 }
             
-                // Add hyphens at appropriate positions to match the desired format
+                
                 $code[8] = '-';
                 $code[13] = '-';
                 $code[18] = '-';
@@ -113,6 +113,7 @@ class UserController extends AbstractController
             //$email = $formData['email'];
             $user = $usersRepository->findOneBy(['email' => $email]);
             dump($user);
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
             if (!$user) {
                 
                 
@@ -124,8 +125,8 @@ class UserController extends AbstractController
             
            
 
-            if (!$user || ($password!== $user->getPassword() && $password!=$user->getRecoveryCode() )) {
-                // Invalid email or password, add flash message
+            if (!$user || ($password!== $user->getPassword() && $password!=$user->getRecoveryCode() ) || !$recaptchaResponse) {
+                
                 dump("validation password ...");
                 
                 
@@ -165,27 +166,28 @@ class UserController extends AbstractController
             dump("form acquired");
             if ($form->isSubmitted() /*&& $form->isValid()*/) {
                 dump("starting form validation");
-                // Get the email address entered by the user
+                
                 $email = $form->get('email')->getData();
                 dump($email);
-                // Validate that the email address is not empty
+                
                 if (empty($email)) {
-                    $this->addFlash('error', 'Please enter your email address.');
+                    //$this->addFlash('error', 'Please enter your email address.');
                     return $this->redirectToRoute('login');
                 }
     
-                // Check if the email address exists in the database
+                
                 $user = $userRepository->findOneByEmail($email);
                 if (!$user) {
-                    $this->addFlash('error', 'Email address not registered. Please enter a valid email address.');
+                    //$this->addFlash('error', 'Email address not registered. Please enter a valid email address.');
                     return $this->redirectToRoute('login');
                 }
                 $code = $this->generateRandomCode();
                 dump($code);
                 $user->setRecoveryCode($code);
+                $entityManager->persist($user);
                 $entityManager->flush();
     
-                // Send the password reset email
+                
                 try {
                     $emaill = (new Email())
                     ->from('mouhamedcena23@gmail.com')
@@ -197,11 +199,11 @@ class UserController extends AbstractController
                 $this->mailer->send($emaill);
 
                     
-                    $this->addFlash('success', 'email sent successfully, Please use the code sent instead of your password.');
+                    //$this->addFlash('success', 'email sent successfully, Please use the code sent instead of your password.');
                     return $this->redirectToRoute('login');
                 } catch (TransportExceptionInterface $e) {
-                    $this->addFlash('error', 'Failed to send email. Please try again later.');
-                    // Log the exception or handle it as needed
+                    //$this->addFlash('error', 'Failed to send email. Please try again later.');
+                    
                     return $this->redirectToRoute('login');
                 }
             }
