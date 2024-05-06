@@ -19,3 +19,6 @@ Home:
 Logout: 
     path: /logout
     controller: App\Controller\LogoutController::index
+HomeDash:
+    path: /dash
+    controller: App\Controller\DashboardController::index
