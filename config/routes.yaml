@@ -14,11 +14,18 @@ ValLogin:
     path: /user
     controller: App\Controller\UserController::signin
 Home:
-    path: /home
-    controller: App\Controller\HomeController::index
+    path: /
+    controller: App\Controller\RecettesController::index
 Logout: 
     path: /logout
     controller: App\Controller\LogoutController::index
 HomeDash:
     path: /dash
     controller: App\Controller\DashboardController::index
+IngredientDash:
+    path: /dashIngredient
+    controller: App\Controller\DashboardIngredientController::index
+app_suggestion_recettes_show:
+    path: '/suggestion/recettes/{idRecetteFamille}'
+    controller: 'App\Controller\SuggestionRecettesController::show'
+    methods: ['GET']
